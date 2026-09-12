@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, send_file, request, jsonify
 from pathlib import Path
 import uuid
 
@@ -10,7 +10,7 @@ ALLOWED = {"png", "jpg", "jpeg", "webp"}
 
 @app.get("/")
 def home():
-    return render_template("index.html")
+    return send_file("index.html")
 
 @app.post("/upload")
 def upload():
