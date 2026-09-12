@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DermaVision AI | Skin Cancer Classification</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div class="bg-grid"></div>
+<div class="shell">
+  <aside class="sidebar">
+    <div class="logo">
+      <div class="logo-mark">✦</div>
+      <div><b>DermaVision</b><span>AI RESEARCH LAB</span></div>
+    </div>
+    <div class="side-caption">EXPLAINABLE SKIN LESION ANALYSIS</div>
+
+    <nav>
+      <a class="active"><i>⌂</i> Screening</a>
+      <a><i>◈</i> Model Benchmark</a>
+      <a><i>◉</i> Grad-CAM</a>
+      <a><i>▤</i> Evaluation</a>
+    </nav>
+
+    <div class="dataset-card">
+      <span class="label">DATASET</span>
+      <strong>HAM10000</strong>
+      <p>10,015 dermoscopic images<br>7 diagnostic classes</p>
+      <div class="mini-tags"><span>CNN</span><span>ResNet50</span><span>EfficientNetB0</span></div>
+    </div>
+
+    <div class="side-bottom">
+      <div class="secure"><span>●</span> LOCAL RESEARCH DEMO</div>
+      <p>For academic demonstration only. This prototype does not provide a medical diagnosis.</p>
+    </div>
+  </aside>
+
+  <main>
+    <header class="header">
+      <div>
+        <div class="eyebrow">AI-ASSISTED DERMOSCOPIC SCREENING</div>
+        <h1>Skin Cancer <span>Classification</span></h1>
+        <p>Multi-class lesion classification with model comparison and explainable AI.</p>
+      </div>
+      <div class="header-right">
+        <div class="status"><span></span> SYSTEM READY</div>
+        <div class="date">RESEARCH PROTOTYPE · v1.0</div>
+      </div>
+    </header>
+
+    <section class="stats">
+      <div><small>IMAGES</small><b>10,015</b><em>HAM10000</em></div>
+      <div><small>CLASSES</small><b>07</b><em>Multi-class</em></div>
+      <div><small>BACKBONES</small><b>03</b><em>CNN + Transfer Learning</em></div>
+      <div><small>EXPLAINABILITY</small><b>Grad-CAM</b><em>Visual attention map</em></div>
+    </section>
+
+    <section class="work-grid">
+      <div class="card input-card">
+        <div class="card-title">
+          <div><span class="num">01</span><div><small>IMAGE INPUT</small><h2>Dermoscopic image</h2></div></div>
+          <button id="clearBtn" class="text-btn hidden">Clear</button>
+        </div>
+
+        <div id="drop" class="drop">
+          <div id="dropContent">
+            <div class="upload-ring">↑</div>
+            <h3>Upload lesion image</h3>
+            <p>Drag & drop an image here or browse from your computer</p>
+            <button id="browse" class="btn-primary">Choose Image</button>
+            <div class="formats">JPG · JPEG · PNG · WEBP · MAX 8 MB</div>
+          </div>
+          <div id="previewWrap" class="preview-wrap hidden">
+            <img id="preview" alt="Uploaded dermoscopic image">
+            <div class="scan hidden" id="scan"></div>
+            <div class="image-corners"></div>
+            <span class="input-tag">INPUT IMAGE</span>
+          </div>
+        </div>
+        <input id="file" type="file" accept="image/*" hidden>
+
+        <div class="control-row">
+          <div class="field">
+            <label>MODEL BACKBONE</label>
+            <select id="model">
+              <option>EfficientNetB0</option>
+              <option>ResNet50</option>
+              <option>Custom CNN</option>
+            </select>
+          </div>
+          <button id="analyze" class="btn-analyze" disabled>Analyze Image <span>→</span></button>
+        </div>
+      </div>
+
+      <div class="card result-card">
+        <div class="card-title">
+          <div><span class="num purple">02</span><div><small>AI OUTPUT</small><h2>Prediction & explanation</h2></div></div>
+          <span class="xai">XAI · GRAD-CAM</span>
+        </div>
+
+        <div id="idle" class="idle">
+          <div class="idle-icon">◎</div>
+          <b>Waiting for an image</b>
+          <span>Prediction, confidence and explanation will appear here.</span>
+        </div>
+
+        <div id="loading" class="loading hidden">
+          <div class="dots"><i></i><i></i><i></i></div>
+          <b>Running inference</b>
+          <span>Preprocessing → feature extraction → classification → Grad-CAM</span>
+        </div>
+
+        <div id="output" class="hidden">
+          <div class="prediction">
+            <div class="check">✓</div>
+            <div><small>TOP PREDICTION</small><h3 id="predName">Melanocytic Nevi</h3><span id="predCode">NV · simulated demo output</span></div>
+            <div class="conf"><small>CONFIDENCE</small><b id="conf">88.7%</b></div>
+          </div>
+
+          <div class="two-col">
+            <div>
+              <div class="section-label">CLASS PROBABILITIES</div>
+              <div id="bars"></div>
+            </div>
+            <div>
+              <div class="section-label">GRAD-CAM HEATMAP</div>
+              <div class="heatmap">
+                <img id="heat" src="{{ url_for('static', filename='demo/sample-lesion.jpeg') }}" alt="Grad-CAM preview">
+                <div class="heat-overlay"></div>
+                <div class="heat-label">DECISION-FOCUSED REGION</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="explain">
+            <div class="explain-icon">✦</div>
+            <div><b>Explainable prediction</b><span>Highlighted regions represent areas used by the model for its classification decision. Replace this demo layer with the real Grad-CAM output after connecting the trained model.</span></div>
+          </div>
+
+          <div class="output-footer">
+            <span>MODEL <b id="modelName">EfficientNetB0</b></span>
+            <span>OUTPUT <b>7 CLASSES</b></span>
+            <span>STATUS <b class="green">DEMO READY</b></span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="lower-grid">
+      <div class="card model-card">
+        <div class="card-title simple"><div><small>MODEL BENCHMARK</small><h2>Three-model strategy</h2></div></div>
+        <div class="models">
+          <div class="model active"><span>01</span><b>Custom CNN</b><small>Baseline · trained from scratch</small></div>
+          <div class="model"><span>02</span><b>ResNet50</b><small>Transfer learning · residual features</small></div>
+          <div class="model"><span>03</span><b>EfficientNetB0</b><small>Transfer learning · efficient backbone</small></div>
+        </div>
+      </div>
+      <div class="card pipeline-card">
+        <div class="card-title simple"><div><small>PROJECT PIPELINE</small><h2>End-to-end workflow</h2></div></div>
+        <div class="pipeline">
+          <span>INPUT</span><b>→</b><span>PREPROCESS</span><b>→</b><span>TRAIN</span><b>→</b><span>PREDICT</span><b>→</b><span>GRAD-CAM</span>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <span>DERMAVISION AI · SKIN CANCER CLASSIFICATION USING DEEP LEARNING</span>
+      <span>ACADEMIC PROTOTYPE · NOT A MEDICAL DEVICE</span>
+    </footer>
+  </main>
+</div>
+<script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>
